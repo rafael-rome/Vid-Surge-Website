@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VidSurge — B2B YouTube Growth Agency</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet" />
+
+  <style>
+
+    /* ── RESET ───────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── DESIGN SYSTEM ───────────────────────────────────────── */
+    :root {
+      --bg:           #f5f2ec;
+      --bg-alt:       #eae6de;
+      --surface:      rgba(255, 255, 255, 0.5);
+      --border:       rgba(0, 0, 0, 0.08);
+      --red:          #e8472a;
+      --green:        #4caf50;
+      --text:         #0a0a0a;
+      --muted:        rgba(10, 10, 10, 0.5);
+      --glass:        rgba(255, 255, 255, 0.55);
+      --glass-border: rgba(255, 255, 255, 0.7);
+      --glass-blur:   blur(14px);
+      --glass-shadow: 0 4px 28px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body:    'DM Sans', sans-serif;
+
+      --nav-h:        72px;
+      --pill:         999px;
+      --radius:       16px;
+      --ease:         cubic-bezier(0.16, 1, 0.3, 1);
+
+      --section-px:   clamp(20px, 5vw, 80px);
+      --section-py:   clamp(72px, 10vw, 120px);
+    }
+
+    /* ── BASE ────────────────────────────────────────────────── */
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none; /* custom cursor — only on hover-capable devices */
+    }
+
+    @media (hover: none) {
+      body { cursor: auto; }
+    }
+
+    /* ── GRAIN OVERLAY ───────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+    }
+
+    /* ── SHARED GLASS MIXIN (apply via class) ────────────────── */
+    .glass {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border-radius: var(--radius);
+      box-shadow: var(--glass-shadow);
+    }
+
+    /* ── SHARED SECTION LABELS & HEADINGS ────────────────────── */
+    .label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 14px;
+    }
+
+    .heading {
+      font-family: var(--font-display);
+      font-size: clamp(42px, 5.5vw, 80px);
+      line-height: 0.93;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      margin-bottom: 48px;
+      /* fade-up — JS adds .visible */
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+    }
+    .heading.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── BUTTONS ─────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 34px;
+      border-radius: var(--pill);
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      text-decoration: none;
+      border: none;
+      cursor: none;
+      transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), background 0.2s;
+    }
+    @media (hover: none) { .btn { cursor: pointer; } }
+
+    .btn--red {
+      background: var(--red);
+      color: #fff;
+    }
+    .btn--red:hover {
+      background: #d63d22;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 36px rgba(232,71,42,0.38);
+    }
+    .btn--red:active { transform: none; box-shadow: none; }
+
+    .btn--ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid rgba(10,10,10,0.22);
+    }
+    .btn--ghost:hover {
+      border-color: var(--text);
+      background: rgba(10,10,10,0.04);
+      transform: translateY(-2px);
+    }
+    .btn--ghost:active { transform: none; }
+
+    /* ── CUSTOM CURSOR ───────────────────────────────────────── */
+    #cursor {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--red);
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.25s, width 0.2s var(--ease), height 0.2s var(--ease);
+    }
+    #cursor.on  { opacity: 1; }
+    #cursor.big { width: 24px; height: 24px; opacity: 0.5; }
+
+    /* ── BACK TO TOP ─────────────────────────────────────────── */
+    #backTop {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      z-index: 500;
+      padding: 11px 20px;
+      border-radius: var(--pill);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      box-shadow: var(--glass-shadow);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: none;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px);
+      transition: opacity 0.3s, transform 0.3s var(--ease);
+    }
+    #backTop.on { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    #backTop:hover { background: rgba(255,255,255,0.8); }
+    @media (hover: none) { #backTop { cursor: pointer; } }
+
+    /* ── NAV ─────────────────────────────────────────────────── */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 200;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 var(--section-px);
+      background: rgba(245,242,236,0.6);
+      backdrop-filter: blur(20px) saturate(1.5);
+      -webkit-backdrop-filter: blur(20px) saturate(1.5);
+      border-bottom: 1px solid var(--glass-border);
+      transition: background 0.35s var(--ease), box-shadow 0.35s var(--ease);
+    }
+    .nav.scrolled {
+      background: rgba(245,242,236,0.88);
+      box-shadow: 0 2px 28px rgba(0,0,0,0.07);
+    }
+
+    .nav__logo {
+      font-family: var(--font-display);
+      font-size: 26px;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+      user-select: none;
+    }
+    .nav__logo span { color: var(--red); }
+
+    /* Mobile: hide full CTA label, show short version */
+    .nav__cta-short { display: none; }
+
+    .nav__cta {
+      padding: 11px 24px;
+      border-radius: var(--pill);
+      background: var(--red);
+      color: #fff;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      border: none;
+      cursor: none;
+      transition: background 0.2s, transform 0.2s var(--ease), box-shadow 0.2s;
+    }
+    .nav__cta:hover {
+      background: #d63d22;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(232,71,42,0.35);
+    }
+    @media (hover: none) { .nav__cta { cursor: pointer; } }
+
+    @media (max-width: 500px) {
+      .nav__cta-full  { display: none; }
+      .nav__cta-short { display: inline; }
+    }
+
+    /* ── FINAL CTA ───────────────────────────────────────────── */
+    .cta-section {
+      position: relative;
+      padding: var(--section-py) var(--section-px);
+      background: #f0ebe1;
+      text-align: center;
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+    }
+
+    /* Soft red radial glow behind content */
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 70% 60% at 50% 60%, rgba(232,71,42,0.11) 0%, transparent 70%);
+    }
+
+    .cta-section__inner {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .cta-section .heading {
+      font-size: clamp(46px, 6.5vw, 92px);
+      margin-bottom: 24px;
+    }
+
+    .cta-section__sub {
+      font-size: clamp(16px, 1.6vw, 19px);
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 520px;
+      margin: 0 auto 36px;
+    }
+
+    .cta-section__btn {
+      padding: 20px 48px;
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: var(--pill);
+      background: var(--red);
+      color: #fff;
+      font-family: var(--font-body);
+      font-weight: 700;
+      text-decoration: none;
+      border: none;
+      cursor: none;
+      transition: background 0.2s, transform 0.2s var(--ease), box-shadow 0.2s;
+      margin-bottom: 16px;
+    }
+    .cta-section__btn:hover {
+      background: #d63d22;
+      transform: translateY(-3px);
+      box-shadow: 0 14px 40px rgba(232,71,42,0.38);
+    }
+    .cta-section__btn:active { transform: none; box-shadow: none; }
+    @media (hover: none) { .cta-section__btn { cursor: pointer; } }
+
+    .cta-section__fine {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 44px;
+    }
+
+    .cta-section__pills {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .stat-pill {
+      padding: 12px 24px;
+      border-radius: var(--pill);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      box-shadow: var(--glass-shadow);
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ── FREE YOUTUBE ADVICE ─────────────────────────────────── */
+    .advice {
+      padding: var(--section-py) 0 var(--section-py) var(--section-px);
+      border-top: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    /* Label and heading keep left padding; track overflows right */
+    .advice__header { padding-right: var(--section-px); }
+
+    .advice__scroll {
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 12px;
+      cursor: grab;
+    }
+    .advice__scroll:active { cursor: grabbing; }
+    .advice__scroll::-webkit-scrollbar { height: 3px; }
+    .advice__scroll::-webkit-scrollbar-track { background: transparent; }
+    .advice__scroll::-webkit-scrollbar-thumb {
+      background: rgba(0,0,0,0.15);
+      border-radius: var(--pill);
+    }
+
+    .advice__track {
+      display: flex;
+      gap: 20px;
+      width: max-content;
+      padding-right: var(--section-px);
+    }
+
+    .acard {
+      scroll-snap-align: start;
+      width: clamp(240px, 28vw, 300px);
+      border-radius: var(--radius);
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      box-shadow: var(--glass-shadow);
+      overflow: hidden;
+      transition: transform 0.3s var(--ease);
+      flex-shrink: 0;
+    }
+    .acard:hover { transform: translateY(-5px); }
+
+    .acard__thumb {
+      height: 170px;
+      display: flex;
+      align-items: flex-end;
+      padding: 18px;
+    }
+
+    .acard__thumb-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      line-height: 1.1;
+      color: #fff;
+      text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+    }
+
+    .acard__label {
+      padding: 14px 18px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────────── */
+    .footer {
+      padding: 0 var(--section-px);
+      background: var(--bg);
+      border-top: 2px solid var(--red);
+    }
+
+    .footer__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      padding: 48px 0 40px;
+      flex-wrap: wrap;
+    }
+
+    .footer__brand { display: flex; flex-direction: column; gap: 5px; }
+
+    .footer__logo {
+      font-family: var(--font-display);
+      font-size: 24px;
+      letter-spacing: 0.04em;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .footer__logo span { color: var(--red); }
+
+    .footer__tagline {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .footer__nav {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+    }
+    .footer__nav a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer__nav a:hover { color: var(--text); }
+
+    .footer__social {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .footer__icon {
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      transition: color 0.2s, transform 0.2s;
+      cursor: none;
+    }
+    .footer__icon:hover { color: var(--red); transform: translateY(-2px); }
+    @media (hover: none) { .footer__icon { cursor: pointer; } }
+
+    .footer__bottom {
+      padding: 18px 0;
+      border-top: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      /* Footer stacks */
+      .footer__top { flex-direction: column; align-items: flex-start; gap: 24px; }
+      .footer__nav { gap: 16px; }
+
+      /* CTA section: button goes full-width, pills stay centered */
+      .cta-section__btn { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 500px) {
+      /* Tighten section heading on very small screens */
+      .heading { font-size: clamp(36px, 10vw, 54px); margin-bottom: 32px; }
+      .cta-section .heading { font-size: clamp(38px, 10.5vw, 58px); }
+
+      /* Advice: remove left-only padding so cards start flush */
+      .advice { padding-left: clamp(16px, 4vw, 24px); }
+      .advice__track { padding-right: clamp(16px, 4vw, 24px); }
+
+      /* Back-to-top moves in from edge */
+      #backTop { bottom: 16px; right: 16px; }
+
+      /* CTA fine print wraps comfortably */
+      .cta-section__fine { font-size: 12px; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- CUSTOM CURSOR -->
+  <div id="cursor" aria-hidden="true"></div>
+
+  <!-- BACK TO TOP -->
+  <button id="backTop" aria-label="Back to top">↑ Top</button>
+
+  <!-- ── NAV ────────────────────────────────────────────────── -->
+  <nav class="nav" id="nav" aria-label="Main navigation">
+    <a href="#" class="nav__logo">Vid<span>Surge</span></a>
+    <a href="#contact" class="nav__cta">
+      <span class="nav__cta-full">Free Strategy Call</span>
+      <span class="nav__cta-short">Let's Talk</span>
+    </a>
+  </nav>
+
+
+  <!-- ── FINAL CTA ──────────────────────────────────────────── -->
+  <section class="cta-section" id="contact" aria-labelledby="cta-heading">
+    <div class="cta-section__inner">
+      <span class="label">Ready to Grow?</span>
+      <h2 class="heading" id="cta-heading">
+        Ready To Turn YouTube<br />Into Your #1 Sales Channel?
+      </h2>
+      <p class="cta-section__sub">
+        Book a free 45-min strategy call. We'll map out exactly how YouTube
+        generates booked calls for your business.
+      </p>
+      <a href="#" class="cta-section__btn">
+        Book Your Free Strategy Call →
+      </a>
+      <span class="cta-section__fine">No fluff. No pitch. Just a real plan.</span>
+      <div class="cta-section__pills">
+        <div class="stat-pill">10–40 Calls/Month</div>
+        <div class="stat-pill">$25K MRR Added</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FREE YOUTUBE ADVICE ────────────────────────────────── -->
+  <section class="advice" id="advice" aria-labelledby="advice-heading">
+    <div class="advice__header">
+      <span class="label">Learn For Free</span>
+      <h2 class="heading" id="advice-heading">Free YouTube Advice</h2>
+    </div>
+    <div class="advice__scroll" role="region" aria-label="Scrollable video cards">
+      <div class="advice__track">
+
+        <article class="acard">
+          <div class="acard__thumb" style="background: linear-gradient(135deg,#c0392b 0%,#6b1009 100%);">
+            <span class="acard__thumb-title">How We Book 40 Calls/Month</span>
+          </div>
+          <p class="acard__label">How We Book 40 Calls/Month Straight From YouTube</p>
+        </article>
+
+        <article class="acard">
+          <div class="acard__thumb" style="background: linear-gradient(135deg,#1c2a3a 0%,#0d1821 100%);">
+            <span class="acard__thumb-title">The B2B YouTube Formula</span>
+          </div>
+          <p class="acard__label">The B2B YouTube Formula Nobody Is Talking About</p>
+        </article>
+
+        <article class="acard">
+          <div class="acard__thumb" style="background: linear-gradient(135deg,#1a5c38 0%,#0b3320 100%);">
+            <span class="acard__thumb-title">Why Your Channel Isn't Converting</span>
+          </div>
+          <p class="acard__label">Why Your YouTube Channel Isn't Generating Leads</p>
+        </article>
+
+        <article class="acard">
+          <div class="acard__thumb" style="background: linear-gradient(135deg,#9a6b00 0%,#5c3f00 100%);">
+            <span class="acard__thumb-title">$25K MRR in 90 Days</span>
+          </div>
+          <p class="acard__label">From $0 to $25K MRR Using Only YouTube Content</p>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer__top">
+
+      <div class="footer__brand">
+        <a href="#" class="footer__logo">Vid<span>Surge</span></a>
+        <p class="footer__tagline">The B2B YouTube Agency</p>
+      </div>
+
+      <nav class="footer__nav" aria-label="Footer navigation">
+        <a href="#testimonials">Testimonials</a>
+        <a href="#process">Process</a>
+        <a href="#work">Results</a>
+        <a href="#advice">Free Advice</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="footer__social">
+        <!-- YouTube -->
+        <a href="#" class="footer__icon" aria-label="VidSurge on YouTube">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M23.5 6.2a3.01 3.01 0 0 0-2.12-2.13C19.54 3.6 12 3.6 12 3.6s-7.54 0-9.38.47A3.01 3.01 0 0 0 .5 6.2C0 8.05 0 12 0 12s0 3.95.5 5.8a3.01 3.01 0 0 0 2.12 2.13C4.46 20.4 12 20.4 12 20.4s7.54 0 9.38-.47a3.01 3.01 0 0 0 2.12-2.13C24 15.95 24 12 24 12s0-3.95-.5-5.8zM9.75 15.52V8.48L15.83 12l-6.08 3.52z"/>
+          </svg>
+        </a>
+        <!-- X / Twitter -->
+        <a href="#" class="footer__icon" aria-label="VidSurge on X">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+
+    </div>
+    <div class="footer__bottom">
+      <p>© 2025 VidSurge. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ── JS ────────────────────────────────────────────────── -->
+  <script>
+    /* --- Nav scroll opacity --- */
+    const nav = document.getElementById('nav');
+    const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    /* --- Back to top --- */
+    const backTop = document.getElementById('backTop');
+    window.addEventListener('scroll', () => {
+      backTop.classList.toggle('on', window.scrollY > 300);
+    }, { passive: true });
+    backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+    /* --- Section heading fade-up --- */
+    const headingObserver = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          headingObserver.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.25 });
+    document.querySelectorAll('.heading').forEach(h => headingObserver.observe(h));
+
+    /* --- Custom cursor (pointer devices only) --- */
+    if (window.matchMedia('(hover: hover)').matches) {
+      const cur = document.getElementById('cursor');
+      let mx = 0, my = 0, cx = 0, cy = 0;
+
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cur.classList.add('on');
+      }, { passive: true });
+
+      document.addEventListener('mouseleave', () => cur.classList.remove('on'));
+
+      document.querySelectorAll('a, button, [role="button"]').forEach(el => {
+        el.addEventListener('mouseenter', () => cur.classList.add('big'));
+        el.addEventListener('mouseleave', () => cur.classList.remove('big'));
+      });
+
+      (function tick() {
+        cx += (mx - cx) * 0.16;
+        cy += (my - cy) * 0.16;
+        cur.style.left = cx + 'px';
+        cur.style.top  = cy + 'px';
+        requestAnimationFrame(tick);
+      })();
+    }
+
+    /* --- Advice row: mouse drag to scroll --- */
+    const scroll = document.querySelector('.advice__scroll');
+    if (scroll) {
+      let down = false, startX, scrollLeft;
+      scroll.addEventListener('mousedown', e => {
+        down = true; startX = e.pageX - scroll.offsetLeft; scrollLeft = scroll.scrollLeft;
+      });
+      scroll.addEventListener('mouseleave', () => down = false);
+      scroll.addEventListener('mouseup',   () => down = false);
+      scroll.addEventListener('mousemove', e => {
+        if (!down) return;
+        e.preventDefault();
+        scroll.scrollLeft = scrollLeft - (e.pageX - scroll.offsetLeft - startX);
+      });
+    }
+  </script>
+
+</body>
+</html>
